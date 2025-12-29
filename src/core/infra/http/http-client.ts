@@ -1,13 +1,12 @@
-// import { getCookie, deleteCookie } from "@/shared/utils/cookie-handler";
 import { HttpError as CustomHttpError } from './http-error';
-import { HttpError, HttpRequest, HttpResponse, IHttpClient } from './index.types';
+import type { HttpError, HttpRequest, HttpResponse, IHttpClient } from './index.types';
 import { corsConfig } from './cors-config';
 
 export class HttpClient implements IHttpClient {
   private baseUrl: string;
   private defaultHeaders: Record<string, string>;
 
-  constructor(baseUrl: string = '', defaultHeaders: Record<string, string> = {}) {
+  constructor(baseUrl = '', defaultHeaders: Record<string, string> = {}) {
     this.baseUrl = baseUrl;
     this.defaultHeaders = {
       ...corsConfig.headers,
@@ -48,8 +47,6 @@ export class HttpClient implements IHttpClient {
   }
 
   private handleUnauthorized() {
-    // deleteCookie(`${process.env.NEXT_PUBLIC_BEARER_TOKEN_KEY}`);
-
     if (typeof window !== 'undefined') {
       window.location.href = '/entrar';
     }
@@ -77,14 +74,11 @@ export class HttpClient implements IHttpClient {
     const requestUrl = this.buildUrl(url, queryParams);
     const requestHeaders = { ...this.defaultHeaders, ...headers };
 
-    // const authToken = getCookie(`${process.env.NEXT_PUBLIC_BEARER_TOKEN_KEY}`);
-
     try {
       const response = await fetch(requestUrl, {
         method: method.toUpperCase(),
         headers: {
           ...requestHeaders,
-          // Authorization: authToken ? `Bearer ${authToken}` : "",
         },
         body: body ? JSON.stringify(body) : undefined,
         ...corsConfig.fetchOptions,
